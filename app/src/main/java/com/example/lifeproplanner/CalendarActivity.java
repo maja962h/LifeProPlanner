@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.CalendarView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,7 +15,9 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 
@@ -43,27 +44,26 @@ public class CalendarActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("PlanPrefs", MODE_PRIVATE);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int dayOfMonth) {
-                String date = year + "-" + (month + 1) + "-" + dayOfMonth;
-                loadPlans(date);
-            }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String currentDate = sdf.format(new Date());
+        loadPlans(currentDate);
+
+        calendarView.setOnDateChangeListener((calendarView, year, month, dayOfMonth) -> {
+            String date = year + "-" + (month + 1) + "-" + dayOfMonth;
+            loadPlans(date);
         });
 
-        buttonSavePlan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String planTitle = editTextPlanTitle.getText().toString();
-                int hour = timePicker.getHour();
-                int minute = timePicker.getMinute();
-                int year = (int) (calendarView.getDate() / 10000);
-                int month = (int) ((calendarView.getDate() % 10000) / 100);
-                int dayOfMonth = (int) calendarView.getDate() % 100;
-                String selectedDate = year + "-" + month + "-" + dayOfMonth;
+        buttonSavePlan.setOnClickListener(view -> {
+            String planTitle = editTextPlanTitle.getText().toString();
+            int hour = timePicker.getHour();
+            int minute = timePicker.getMinute();
+            int year = (int) (calendarView.getDate() / 10000);
+            int month = (int) ((calendarView.getDate() % 10000) / 100);
+            int dayOfMonth = (int) calendarView.getDate() % 100;
+            String selectedDate = year + "-" + month + "-" + dayOfMonth;
 
-                savePlan(selectedDate, planTitle, hour, minute);
-            }
+            savePlan(selectedDate, planTitle, hour, minute);
         });
 
     }
@@ -71,6 +71,7 @@ public class CalendarActivity extends AppCompatActivity {
     private void savePlan(String date, String title, int hour, int minute){
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String planKey = date + "_" + hour + ":" + minute;
+        System.out.println(planKey);
         editor.putString(planKey, title);
         editor.apply();
 
