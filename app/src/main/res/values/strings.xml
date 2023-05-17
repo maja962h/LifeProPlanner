@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">LifeProPlanner</string>
     <string name="create_note">Create Note</string>
+    <string name="tasks">To-Do</string>
+    <string name="new_task">New Task</string>
+    <string name="save">Save</string>
 </resources>

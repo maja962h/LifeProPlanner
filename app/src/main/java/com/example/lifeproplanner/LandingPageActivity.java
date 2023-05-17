@@ -41,6 +41,17 @@ public class LandingPageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        // Set click listener for the "To Do" button
+        Button todoButton = findViewById(R.id.todo_button);
+        notesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Launch NotesActivity
+                Intent intent = new Intent(LandingPageActivity.this, TodoActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
 
