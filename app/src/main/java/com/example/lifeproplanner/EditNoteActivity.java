@@ -1,9 +1,8 @@
 package com.example.lifeproplanner;
 
-// EditNoteActivity.java
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,19 +32,19 @@ public class EditNoteActivity extends AppCompatActivity {
             editTextContent.setText(noteContent);
         }
 
-
         buttonSave.setOnClickListener(v -> {
-
             String updatedTitle = editTextTitle.getText().toString().trim();
             String updatedContent = editTextContent.getText().toString().trim();
 
-            Toast.makeText(EditNoteActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
+            if (TextUtils.isEmpty(updatedTitle) && TextUtils.isEmpty(updatedContent)) {
+                Toast.makeText(EditNoteActivity.this, "Cannot save an empty note", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             Intent intent = new Intent();
             intent.putExtra("updatedTitle", updatedTitle);
             intent.putExtra("updatedContent", updatedContent);
             setResult(RESULT_OK, intent);
-
             finish();
         });
     }

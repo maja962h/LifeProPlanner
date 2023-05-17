@@ -2,9 +2,9 @@ package com.example.lifeproplanner;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +18,9 @@ public class NotesActivity extends AppCompatActivity implements NoteAdapter.OnNo
     private RecyclerView recyclerView;
     private NoteAdapter noteAdapter;
     private List<Note> noteList;
+    private int editingNotePosition;
+    private static final int REQUEST_CODE_EDIT_NOTE = 1;
+    private static final int REQUEST_CODE_CREATE_NOTE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +30,6 @@ public class NotesActivity extends AppCompatActivity implements NoteAdapter.OnNo
         noteList = new ArrayList<>();
         // Add some sample notes
         noteList.add(new Note("Note 1", "Content 1"));
-        noteList.add(new Note("Note 2", "Content 2"));
-        noteList.add(new Note("Note 3", "Content 3"));
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -36,12 +37,7 @@ public class NotesActivity extends AppCompatActivity implements NoteAdapter.OnNo
         recyclerView.setAdapter(noteAdapter);
 
         FloatingActionButton fabCreateNote = findViewById(R.id.fabCreateNote);
-        fabCreateNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createNewNote();
-            }
-        });
+        fabCreateNote.setOnClickListener(v -> createNewNote());
     }
 
     @Override
@@ -52,13 +48,14 @@ public class NotesActivity extends AppCompatActivity implements NoteAdapter.OnNo
         Intent intent = new Intent(this, EditNoteActivity.class);
         intent.putExtra("noteTitle", note.getTitle());
         intent.putExtra("noteContent", note.getContent());
-        startActivity(intent);
+        editingNotePosition = position; // Set the editing note position
+        startActivityForResult(intent, REQUEST_CODE_EDIT_NOTE);
     }
 
     public void createNewNote() {
         // Open the EditNoteActivity to create a new note
         Intent intent = new Intent(this, EditNoteActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_CREATE_NOTE);
     }
 
     public void deleteNote(int position) {
@@ -71,5 +68,34 @@ public class NotesActivity extends AppCompatActivity implements NoteAdapter.OnNo
     @Override
     public void onDeleteClick(int position) {
         deleteNote(position);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && data != null) {
+            if (requestCode == REQUEST_CODE_EDIT_NOTE) {
+                String updatedTitle = data.getStringExtra("updatedTitle");
+                String updatedContent = data.getStringExtra("updatedContent");
+
+                // Update the note in the list
+                Note updatedNote = noteList.get(editingNotePosition);
+                updatedNote.setTitle(updatedTitle);
+                updatedNote.setContent(updatedContent);
+                // Notify the adapter about the data change
+                noteAdapter.notifyItemChanged(editingNotePosition);
+            } else if (requestCode == REQUEST_CODE_CREATE_NOTE) {
+                String newTitle = data.getStringExtra("updatedTitle");
+                String newContent = data.getStringExtra("updatedContent");
+
+                // Create a new note
+                Note newNote = new Note(newTitle, newContent);
+                noteList.add(newNote);
+                // Notify the adapter about the new item
+                noteAdapter.notifyItemInserted(noteList.size() - 1);
+                // Scroll to the newly added note
+                recyclerView.scrollToPosition(noteList.size() - 1);
+            }
+        }
     }
 }
