@@ -1,6 +1,5 @@
 package com.example.lifeproplanner;
 
-
 public class Note {
     private String title;
     private String content;

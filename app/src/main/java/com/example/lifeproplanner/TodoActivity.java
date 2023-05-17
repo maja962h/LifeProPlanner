@@ -1,29 +1,20 @@
 package com.example.lifeproplanner;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 
 import com.example.lifeproplanner.Adapter.ToDoAdapter;
 import com.example.lifeproplanner.Model.ToDoModel;
 import com.example.lifeproplanner.Utils.DatabaseHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 
 public class TodoActivity extends AppCompatActivity implements DialogCloseListener{
@@ -61,13 +52,9 @@ public class TodoActivity extends AppCompatActivity implements DialogCloseListen
 
         tasksAdapter.setTasks(taskList);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG);
-            }
-        });
+        fab.setOnClickListener(v -> AddNewTask.newInstance().show(getSupportFragmentManager(), AddNewTask.TAG));
     }
+
 
     @Override
     public void handleDialogClose(DialogInterface dialog){
@@ -75,5 +62,12 @@ public class TodoActivity extends AppCompatActivity implements DialogCloseListen
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
+    }
+
+
+    public void deleteTask(int position) { tasksAdapter.deleteItem(position); }
+    @Override
+    public void onDeleteClick(int position) {
+        deleteTask(position);
     }
 }

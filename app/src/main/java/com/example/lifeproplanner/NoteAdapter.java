@@ -1,7 +1,6 @@
 package com.example.lifeproplanner;
 // NoteAdapter.java
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
             }
         });
 
-        holder.deleteButton.setOnClickListener((View.OnClickListener) v -> {
+        holder.deleteButton.setOnClickListener(v -> {
             if (onNoteClickListener != null) {
                 onNoteClickListener.onDeleteClick(position);
             }

@@ -17,10 +17,17 @@
             android:id="@+id/todoCheckBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:paddingStart="8dp"
-            android:buttonTint="@android:color/holo_green_dark"
-            tools:text="This is a simple task inside the application."/>
+            android:textSize="12sp"
+            tools:text="This is a simple task inside the application." />
+
+        <ImageButton
+            android:id="@+id/deleteTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_delete"
+            android:background="@android:color/transparent" />
 
     </RelativeLayout>
 
